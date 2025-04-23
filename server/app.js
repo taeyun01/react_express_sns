@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
+import tweetsRouter from "./router/tweets.js";
 
 const app = express();
 
@@ -10,8 +11,16 @@ app.use(helmet());
 app.use(cors()); // 배포할때 옵션추가
 app.use(morgan("dev"));
 
-app.get("/", (req, res) => {
-  res.send("서버 프로젝트 셋팅 완료");
+app.use("/tweets", tweetsRouter);
+
+app.use((req, res, next) => {
+  res.sendStatus(404);
+});
+
+// 에러 핸들러
+app.use((error, req, res, next) => {
+  console.error(error);
+  res.sendStatus(500);
 });
 
 app.listen(8080, () => {
