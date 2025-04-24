@@ -7,9 +7,9 @@ import {
   useImperativeHandle,
   useMemo,
   useState,
-} from 'react';
-import Header from '../components/Header';
-import Login from '../pages/Login';
+} from "react";
+import Header from "../components/Header";
+import Login from "../pages/Login";
 
 const AuthContext = createContext({});
 
@@ -65,7 +65,7 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
       {user ? (
         children
       ) : (
-        <div className='app'>
+        <div className="app">
           <Header />
           <Login onSignUp={signUp} onLogin={logIn} />
         </div>
