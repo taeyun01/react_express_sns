@@ -25,18 +25,20 @@ let tweets = [
   },
 ];
 
+//* 나중에 DB에서 데이터를 가져올것이므로 비동기로 처리)
+
 // 모든 트윗 조회
-export const getAll = () => tweets;
+export const getAll = async () => tweets;
 
 // 특정한 username을 가진 트윗 조회
-export const getAllByUsername = (username) =>
+export const getAllByUsername = async (username) =>
   tweets.filter((tweet) => tweet.username === username);
 
 // 특정한 id를 가진 트윗 조회
-export const getById = (id) => tweets.find((tweet) => tweet.id === id);
+export const getById = async (id) => tweets.find((tweet) => tweet.id === id);
 
 // 트윗 생성
-export const create = (text, name, username) => {
+export const create = async (text, name, username) => {
   const tweet = {
     id: Date.now().toString(),
     text,
@@ -51,7 +53,7 @@ export const create = (text, name, username) => {
 };
 
 // 트윗 수정
-export const update = (id, text) => {
+export const update = async (id, text) => {
   const tweet = tweets.find((tweet) => tweet.id === id);
 
   if (tweet) {
@@ -62,7 +64,7 @@ export const update = (id, text) => {
 };
 
 // 트윗 삭제 (js에서 delete키워드를 사용하므로 함수명으로 사용못함)
-export const remove = (id) => {
+export const remove = async (id) => {
   tweets = tweets.filter((tweet) => tweet.id !== id); // 삭제할 트윗의 id와 일치하지 않는 트윗만 남김
   if (tweets.length === 0) {
     return false;
