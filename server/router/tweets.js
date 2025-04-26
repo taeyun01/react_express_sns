@@ -1,5 +1,7 @@
 import express from "express";
+import { validateTweet } from "../middleware/validation.js";
 import * as tweetsController from "../controller/tweet.js";
+import validate from "../middleware/validator.js";
 
 const router = express.Router();
 
@@ -13,10 +15,10 @@ router.get("/", tweetsController.getTweets);
 router.get("/:id", tweetsController.getTweet);
 
 // POST /tweets
-router.post("/", tweetsController.createTweet);
+router.post("/", validateTweet, validate, tweetsController.createTweet);
 
 // PUT /tweets/:id
-router.put("/:id", tweetsController.updateTweet);
+router.put("/:id", validateTweet, validate, tweetsController.updateTweet);
 
 // DELETE /tweets/:id
 router.delete("/:id", tweetsController.deleteTweet);

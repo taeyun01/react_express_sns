@@ -1,4 +1,6 @@
 import * as tweetsRepository from "../data/tweet.js";
+// controller는 서버에 있는 중요한 비즈니스 로직을 작성하는 곳
+// 서버를 통신하고 관련된 데이터를 받아오고 또 데이터가 잘못되었을 때 어떻게 에러를 보여줄것인지
 
 //* tweets와 username이 전달 됐을 때와 안 됐을 때 처리
 export const getTweets = async (req, res) => {
