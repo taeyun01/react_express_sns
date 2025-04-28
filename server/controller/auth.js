@@ -64,3 +64,18 @@ const createJwtToken = (userId) => {
     expiresIn: jwtExpiresInDays,
   });
 };
+
+//* 사용자 정보 조회
+export const me = async (req, res) => {
+  //* 1. 한번더 db에 사용자 여부 조회 (이 단계까지는 안올거임 이미 미들웨어에서 한번 검증했음)
+  const user = await userRepository.findById(req.userId);
+  if (!user) {
+    return res.status(404).json({ message: "사용자를 찾을 수 없습니다." });
+  }
+
+  //* 2. 그래도 db에서 읽어오는 이유는 로그인된 사용자라면 토큰에는 userId만 넣어서 만드므로, 해당 사용자에 대한 정보를 읽어오기 위해서 이렇게 따로 토큰과 함께 유저 데이터를 보내줌
+  res.status(200).json({
+    token: req.token,
+    username: user.username,
+  });
+};

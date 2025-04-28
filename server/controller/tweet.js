@@ -23,8 +23,9 @@ export const getTweet = async (req, res) => {
 };
 
 export const createTweet = async (req, res) => {
-  const { text, name, username } = req.body; // 클라이언트에서 보낸 데이터
-  const tweet = await tweetsRepository.create(text, name, username);
+  const { text } = req.body; // 클라이언트에서 보낸 데이터
+  const userId = req.userId; // req에 저장된 userId를 가져옴 (게시글 생성창 진입시 이미 인증된 사용자의 id는 req에 저장되어있음, middleware/auth.js에서 확인)
+  const tweet = await tweetsRepository.create(text, userId);
 
   if (!tweet) {
     res.status(400).json({ message: "트윗을 생성하지 못했습니다" });

@@ -22,3 +22,8 @@ export const createUser = async (user) => {
   users.push(newUser);
   return newUser.id;
 };
+
+//* 사용자 조회 (주어진 id에 해당하는 사용자 조회 있다면 해당 사용자 반환, 없다면 null 반환)
+export const findById = async (id) => {
+  return users.find((user) => user.id === id);
+};
