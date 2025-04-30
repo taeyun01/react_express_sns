@@ -1,12 +1,7 @@
 import * as userRepository from "../data/auth.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-
-// TODO: 이런 Key, 만료시간, 솔트 등등 같은 것들은 전부 보안에 관련된 것들이기 때문에 환경변수로 뺌
-const jwtSecretKey = process.env.JWT_SECRET;
-const jwtExpiresInDays = process.env.JWT_EXPIRES_SEC;
-const bcryptSaltRounds = process.env.BCRYPT_SALT_ROUNDS;
-
+import { config } from "../config.js";
 //* 회원가입
 export const signup = async (req, res) => {
   const { username, password, name, email, url } = req.body;
@@ -18,7 +13,7 @@ export const signup = async (req, res) => {
       .json({ message: `${username} 이미 존재하는 사용자입니다.` });
   }
 
-  const hashedPassword = await bcrypt.hash(password, bcryptSaltRounds); // 비밀번호 암호화
+  const hashedPassword = await bcrypt.hash(password, config.bcrypt.saltRounds); // 비밀번호 암호화
 
   // 새로운 사용자 생성
   const userId = await userRepository.createUser({
@@ -60,8 +55,8 @@ export const login = async (req, res) => {
 
 //* 토큰 생성 함수
 const createJwtToken = (userId) => {
-  return jwt.sign({ id: userId }, jwtSecretKey, {
-    expiresIn: jwtExpiresInDays,
+  return jwt.sign({ id: userId }, config.jwt.secretKey, {
+    expiresIn: config.jwt.expiresInSec,
   });
 };
 
