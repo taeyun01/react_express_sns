@@ -55,7 +55,7 @@ export const getAllByUsername = async (username) => {
 // 특정한 id를 가진 트윗 조회
 export const getById = async (id) => {
   const found = tweets.find((tweet) => tweet.id === id);
-  // console.log("found: ", found);
+  console.log("found: ", found);
   if (!found) {
     return null;
   }
@@ -66,7 +66,7 @@ export const getById = async (id) => {
 // 트윗 생성
 export const create = async (text, userId) => {
   const tweet = {
-    id: new Date().toString(),
+    id: Date.now().toString(),
     text,
     createdAt: new Date(),
     userId,
