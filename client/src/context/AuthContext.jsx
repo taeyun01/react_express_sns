@@ -22,8 +22,10 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
 
   useEffect(() => {
     authErrorEventBus.listen((err) => {
-      console.log(err);
-      setUser(undefined);
+      if (err.message === "Authentication Error") {
+        console.log(err.message);
+        setUser(undefined);
+      }
     });
   }, [authErrorEventBus]);
 
@@ -41,7 +43,10 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
 
   const logIn = useCallback(
     async (username, password) =>
-      authService.login(username, password).then((user) => setUser(user)),
+      authService
+        .login(username, password)
+        .then((user) => setUser(user))
+        .catch(console.error),
     [authService]
   );
 

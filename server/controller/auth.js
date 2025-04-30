@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 // TODO: 일단 임시로 써놓고 나중에 보안 처리
 const jwtSecretKey = "%3GH)Yu/43>p]4xm5CQ{&;yp%.R+}7LL";
-const jwtExpiresInDays = "2d";
+const jwtExpiresInDays = "1d"; // 토큰 만료 기간 1일
 const bcryptSaltRounds = 12;
 
 //* 회원가입
