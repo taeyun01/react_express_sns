@@ -2,10 +2,10 @@ import * as userRepository from "../data/auth.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-// TODO: 일단 임시로 써놓고 나중에 보안 처리
-const jwtSecretKey = "%3GH)Yu/43>p]4xm5CQ{&;yp%.R+}7LL";
-const jwtExpiresInDays = "1d"; // 토큰 만료 기간 1일
-const bcryptSaltRounds = 12;
+// TODO: 이런 Key, 만료시간, 솔트 등등 같은 것들은 전부 보안에 관련된 것들이기 때문에 환경변수로 뺌
+const jwtSecretKey = process.env.JWT_SECRET;
+const jwtExpiresInDays = process.env.JWT_EXPIRES_SEC;
+const bcryptSaltRounds = process.env.BCRYPT_SALT_ROUNDS;
 
 //* 회원가입
 export const signup = async (req, res) => {
