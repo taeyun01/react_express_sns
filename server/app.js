@@ -5,7 +5,7 @@ import helmet from "helmet";
 import tweetsRouter from "./router/tweets.js";
 import authRouter from "./router/auth.js";
 import { config } from "./config.js";
-import { Server } from "socket.io";
+import { initSocket } from "./connection/socket.js";
 
 const app = express();
 
@@ -30,19 +30,5 @@ app.use((error, req, res, next) => {
 const server = app.listen(config.host.port, () => {
   console.log(`Server is running on port ${config.host.port}`);
 });
-const socketIO = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
-});
 
-socketIO.on("connection", (socket) => {
-  console.log("새로운 클라이언트 접속이 확인되었습니다. ID: ", socket.id);
-  socketIO.emit("twitter", "Welcome to Socket.io");
-  socketIO.emit("twitter", "Welcome to Socket.io");
-});
-
-setInterval(() => {
-  socketIO.emit("twitter", "안녕 클라이언트?");
-}, 1000);
+initSocket(server);
