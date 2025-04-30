@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { AuthErrorEventBus } from "./context/AuthContext";
 import HttpClient from "./network/http";
 import TokenStorage from "./db/token";
+import socket, { io } from "socket.io-client";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 const tokenStorage = new TokenStorage();
@@ -16,6 +17,16 @@ const authErrorEventBus = new AuthErrorEventBus();
 const httpClient = new HttpClient(baseURL, authErrorEventBus);
 const authService = new AuthService(httpClient, tokenStorage);
 const tweetService = new TweetService(httpClient, tokenStorage);
+
+const socketIO = socket(baseURL);
+
+socketIO.on("connect_error", (error) => {
+  console.log("연결 실패", error);
+});
+
+socketIO.on("twitter", (message) => {
+  console.log(message);
+});
 
 ReactDOM.render(
   <React.StrictMode>
