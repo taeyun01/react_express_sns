@@ -16,7 +16,10 @@ export default class HttpClient {
     let data;
 
     try {
-      data = await res.json();
+      // 상태 코드가 204인 경우 JSON 파싱을 건너뜀 (삭제시 데이터가 없기 때문에 콘솔에 SyntaxError에러 발생)
+      if (res.status !== 204) {
+        data = await res.json();
+      }
     } catch (error) {
       console.error(error);
     }
