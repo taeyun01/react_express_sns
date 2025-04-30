@@ -37,24 +37,48 @@ export const createTweet = async (req, res) => {
 export const updateTweet = async (req, res) => {
   const id = req.params.id; // 수정할 트윗의 id
   const text = req.body.text; // 수정할 트윗의 내용
-  const tweet = await tweetsRepository.update(id, text); // 수정할 트윗을 찾음
+  const tweet = await tweetsRepository.getById(id); // 해당 id의 트윗을 찾음
 
   if (!tweet) {
     res.status(404).json({ message: `트윗 id(${id})를 찾을 수 없습니다` }); // 없으면 404
   }
 
-  res.status(200).json(tweet); // 수정된 트윗을 클라이언트에 반환
+  // 트윗의 id와 로그인 된 사용자의 id가 다르면 수정 불가능
+  if (tweet.userId !== req.userId) {
+    res.status(403).json({ message: "트윗 수정 권한이 없습니다" });
+  }
+
+  const updatedTweet = await tweetsRepository.update(id, text); // 수정할 트윗을 찾음
+
+  if (!updatedTweet) {
+    res
+      .status(400)
+      .json({ message: "수정에 실패했습니다. 다시 시도해주세요." });
+  }
+
+  res.status(200).json(updatedTweet); // 수정된 트윗을 클라이언트에 반환
 };
 
 export const deleteTweet = async (req, res) => {
   const id = req.params.id;
-  const success = await tweetsRepository.remove(id);
+  const tweet = await tweetsRepository.getById(id); // 해당 id의 트윗을 찾음
 
-  if (!success) {
-    res.status(404).json({
-      message: `트윗 id(${id})를 찾을 수 없습니다. 다시 시도해주세요.`,
-    }); // 없으면 404
+  if (!tweet) {
+    res.status(404).json({ message: `트윗 id(${id})를 찾을 수 없습니다` }); // 없으면 404
   }
 
-  res.sendStatus(204); // 삭제되었음을 알리는 204 상태 코드 반환
+  // 트윗의 id와 로그인 된 사용자의 id가 다르면 삭제 불가능
+  if (tweet.userId !== req.userId) {
+    res.status(403).json({ message: "트윗 삭제 권한이 없습니다" });
+  }
+
+  const removeTweet = await tweetsRepository.remove(id);
+
+  if (!removeTweet) {
+    res
+      .status(400)
+      .json({ message: "삭제에 실패했습니다. 다시 시도해주세요." });
+  }
+
+  res.sendStatus(204).json({ message: "삭제가 완료되었습니다." }); // 삭제되었음을 알리는 204 상태 코드 반환
 };
