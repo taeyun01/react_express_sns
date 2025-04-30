@@ -1,6 +1,7 @@
 export default class TweetService {
-  constructor(http) {
+  constructor(http, tokenStorage) {
     this.http = http;
+    this.tokenStorage = tokenStorage;
   }
 
   async getTweets(username) {
@@ -10,6 +11,7 @@ export default class TweetService {
     // 서버에서 데이터를 가져오는 요청
     return this.http.fetch(`/tweets${query}`, {
       method: "GET",
+      headers: this.getHeaders(),
     });
   }
 
@@ -18,12 +20,14 @@ export default class TweetService {
     return this.http.fetch(`/tweets`, {
       method: "POST",
       body: JSON.stringify({ text, name: "Taeyun", username: "taeyun" }),
+      headers: this.getHeaders(),
     });
   }
 
   async deleteTweet(tweetId) {
     return this.http.fetch(`/tweets/${tweetId}`, {
       method: "DELETE",
+      headers: this.getHeaders(),
     });
     // DELETE는 따로 데이터를 받아오지 않음
   }
@@ -32,6 +36,14 @@ export default class TweetService {
     return this.http.fetch(`/tweets/${tweetId}`, {
       method: "PUT",
       body: JSON.stringify({ text }),
+      headers: this.getHeaders(),
     });
+  }
+
+  getHeaders() {
+    const token = this.tokenStorage.getToken();
+    return {
+      Authorization: `Bearer ${token}`,
+    };
   }
 }
