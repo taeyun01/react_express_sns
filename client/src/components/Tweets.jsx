@@ -1,21 +1,26 @@
-import React, { memo, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import Banner from './Banner';
-import NewTweetForm from './NewTweetForm';
-import TweetCard from './TweetCard';
-import { useAuth } from '../context/AuthContext';
+import React, { memo, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import Banner from "./Banner";
+import NewTweetForm from "./NewTweetForm";
+import TweetCard from "./TweetCard";
+import { useAuth } from "../context/AuthContext";
 
 const Tweets = memo(({ tweetService, username, addable }) => {
   const [tweets, setTweets] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const history = useHistory();
   const { user } = useAuth();
 
   useEffect(() => {
+    // 트윗 목록 가져오기
     tweetService
       .getTweets(username)
       .then((tweets) => setTweets([...tweets]))
       .catch(onError);
+
+    // 새로운 트윗이 생겼을 때 실시간으로 트윗 목록에 추가
+    const stopSync = tweetService.onSync((tweet) => onCreated(tweet));
+    return () => stopSync(); // 컴포넌트가 사라질 때 실시간 동기화 중지
   }, [tweetService, username, user]);
 
   const onCreated = (tweet) => {
@@ -45,7 +50,7 @@ const Tweets = memo(({ tweetService, username, addable }) => {
   const onError = (error) => {
     setError(error.toString());
     setTimeout(() => {
-      setError('');
+      setError("");
     }, 3000);
   };
 
@@ -59,8 +64,8 @@ const Tweets = memo(({ tweetService, username, addable }) => {
         />
       )}
       {error && <Banner text={error} isAlert={true} transient={true} />}
-      {tweets.length === 0 && <p className='tweets-empty'>No Tweets Yet</p>}
-      <ul className='tweets'>
+      {tweets.length === 0 && <p className="tweets-empty">No Tweets Yet</p>}
+      <ul className="tweets">
         {tweets.map((tweet) => (
           <TweetCard
             key={tweet.id}

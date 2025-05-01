@@ -22,7 +22,7 @@ class Socket {
       }
 
       // 또 jwt로 해독을 했을때 검증된 토큰이 아니라면
-      jwt.verify(token, config.jwt.secret, (err, decoded) => {
+      jwt.verify(token, config.jwt.secretKey, (err, decoded) => {
         // 검증에 실패했다면 에러 발생 (더 이상 소켓이 처리되지 않도록 만듬)
         if (err) {
           return next(new Error("Authentication error"));
