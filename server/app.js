@@ -10,9 +10,14 @@ import { db } from "./db/database.js";
 
 const app = express();
 
+const corsOptions = {
+  origin: config.cors.allowedOrigins,
+  optionsSuccessStatus: 200,
+};
+
 app.use(express.json());
 app.use(helmet());
-app.use(cors()); // 배포할때 옵션추가
+app.use(cors(corsOptions)); // 배포할때 옵션추가
 app.use(morgan("dev"));
 
 app.use("/tweets", tweetsRouter);
@@ -30,8 +35,8 @@ app.use((error, req, res, next) => {
 
 db.getConnection().then(() => console.log("MySQL DB 연결 성공!"));
 
-const server = app.listen(config.host.port, () => {
-  console.log(`Server is running on port ${config.host.port}`);
+const server = app.listen(config.port, () => {
+  console.log(`Server is running... ${new Date().toLocaleString()}`);
 });
 
 initSocket(server);

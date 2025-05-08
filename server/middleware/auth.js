@@ -31,6 +31,7 @@ export const isAuth = async (req, res, next) => {
 
     // 사용자가 존재하면 사용자 정보를 요청에 추가
     req.userId = user.id; // request 객체에 사용자 정보 추가 ex) req.customData (계속 동일하게 접근해야하는 데이터라면 이렇게 등록해주어 사용할 수 있음)
+    req.token = token; // req에 토큰 정보도 필요하므로 추가
     next();
   });
 };

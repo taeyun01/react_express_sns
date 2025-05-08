@@ -7,7 +7,7 @@ class Socket {
     // 소켓 서버 생성
     this.io = new Server(server, {
       cors: {
-        origin: "*",
+        origin: config.cors.allowedOrigins,
         methods: ["GET", "POST"],
       },
     });
@@ -34,7 +34,7 @@ class Socket {
 
     // 위 검증이 정상적으로 끝나면 소켓 연결이 됨
     this.io.on("connection", (socket) => {
-      console.log("새로운 클라이언트 접속이 확인되었습니다. ID: ", socket.id);
+      console.log("새로운 클라이언트 접속이 확인되었습니다.");
     });
   }
 }
