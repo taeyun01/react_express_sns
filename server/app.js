@@ -28,7 +28,7 @@ app.use((error, req, res, next) => {
   res.sendStatus(500);
 });
 
-db.getConnection().then((connection) => console.log(connection));
+db.getConnection().then(() => console.log("MySQL DB 연결 성공!"));
 
 const server = app.listen(config.host.port, () => {
   console.log(`Server is running on port ${config.host.port}`);
