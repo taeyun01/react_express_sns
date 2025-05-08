@@ -1,5 +1,5 @@
 # The name of this app. Must be unique within a project.
-name: twitter
+name: app
 
 # The runtime the application uses. The 'type' key defines the base container
 # image that will be used to run the application. There is a separate base
@@ -7,7 +7,7 @@ name: twitter
 # in multiple versions. Check the JavaScript/Node.js documentation
 # (https://docs.platform.sh/languages/nodejs.html#supported-versions)
 # to find the supported versions for the 'nodejs' type.
-type: "nodejs:18"
+type: "nodejs:22"
 
 # The following block defines a single writable directory, 'web/uploads'
 # The 'source' specifies where the writable mount is. The 'local' source
@@ -20,7 +20,7 @@ mounts:
     source_path: uploads
 
 # The size of the persistent disk of the application (in MB).
-disk: 512
+disk: 256
 
 # The relationships of the application with services or other applications.
 #
@@ -34,7 +34,6 @@ web:
   commands:
     start: "node app.js"
 
-  #NGINX
   locations:
     "/":
       passthru: true

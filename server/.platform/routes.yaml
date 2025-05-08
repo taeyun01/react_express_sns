@@ -7,8 +7,8 @@
   type: redirect
   to: "https://www.{default}/"
 
-"https://www.{default}/ws":
+https://www.{default}/":
   type: upstream
   upstream: "twitter:http"
   cache:
-    enabled: false
+    enabled: true
