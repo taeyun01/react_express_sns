@@ -11,4 +11,4 @@
   type: upstream
   upstream: "twitter:http"
   cache:
-    enabled: true
+    enabled: false
