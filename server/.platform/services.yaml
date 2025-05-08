@@ -5,6 +5,7 @@ oracle-mysql:
   # (https://docs.platform.sh/add-services/mysql.html#supported-versions)
   # when choosing a version. If you specify a version number which is not available,
   # the CLI will return an error.
-  type: oracle-mysql:8.0
+  mysql:
+    type: "mysql:10.4"
+    disk: 512
   # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
-  disk: 512
