@@ -7,7 +7,7 @@ name: twitter
 # in multiple versions. Check the JavaScript/Node.js documentation
 # (https://docs.platform.sh/languages/nodejs.html#supported-versions)
 # to find the supported versions for the 'nodejs' type.
-type: "nodejs:22"
+type: "nodejs:18"
 
 # The following block defines a single writable directory, 'web/uploads'
 # The 'source' specifies where the writable mount is. The 'local' source
@@ -28,7 +28,7 @@ disk: 512
 # to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
 # side is in the form '<service name>:<endpoint name>'.
 relationships:
-  mysql: "mysql:mysql"
+  oracle-mysql: "oracle-mysql:mysql"
 
 web:
   commands:
