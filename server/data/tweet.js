@@ -1,99 +1,58 @@
-import * as userRepository from "./auth.js";
+import { db } from "../db/database.js";
 
-// 우선 더미데이터로 데이터 조회 (서버에서 let을 선언하는건 좋지 않음, 임시로 쓰는거니 일단 넘어감)
-let tweets = [
-  {
-    id: "1",
-    text: "취준생 화이팅!!",
-    createdAt: new Date().toString(),
-    userId: "1",
-    // name: "Taeyun",
-    // username: "taeyun",
-    // url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyPkxMuo6NOHcNx-aO-wOo3eyVnB2oTq-ZwA&s",
-  },
-  {
-    id: "2",
-    text: "안녕하세요",
-    createdAt: new Date().toString(),
-    userId: "1",
-    // name: "Taeyun",
-    // username: "taeyun",
-  },
-  {
-    id: "3",
-    text: "오늘 날씨가 정말 좋아요",
-    createdAt: new Date().toString(),
-    userId: "1",
-    // name: "Taeyun",
-    // username: "taeyun",
-    // url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyPkxMuo6NOHcNx-aO-wOo3eyVnB2oTq-ZwA&s",
-  },
-];
+const SELECT_JOIN =
+  "SELECT tw.id, tw.text, tw.createdAt, tw.userId, us.username, us.name, us.url FROM tweets as tw JOIN users as us ON tw.userId = us.id";
+const ORDER_DESC = "ORDER BY tw.createdAt DESC";
 
-//* 나중에 DB에서 데이터를 가져올것이므로 비동기로 처리)
-
+//* DB에서 데이터를 가져올것이므로 비동기로 처리
 // 모든 트윗 조회
 export const getAll = async () => {
-  return Promise.all(
-    tweets.map(async (tweet) => {
-      const { username, name, url } = await userRepository.findById(
-        tweet.userId
-      );
-      return { ...tweet, username, name, url }; // 사용자들의 정보를 포함한 트윗 반환
-    })
-  );
+  return db.execute(`${SELECT_JOIN} ${ORDER_DESC}`).then((result) => {
+    console.log("result: ", result[0]); // 게시글 전부 반환 해야하므로 0번째 인덱스만 반환
+    return result[0];
+  });
 };
 
 // 특정한 username을 가진 트윗 조회
 export const getAllByUsername = async (username) => {
-  // getAll()함수 반환값들 중에 username이 일치하는 트윗들만 필터링
-  return getAll().then((tweets) =>
-    tweets.filter((tweet) => tweet.username === username)
-  );
+  return db
+    .execute(`${SELECT_JOIN} WHERE us.username=? ${ORDER_DESC}`, [username])
+    .then((result) => {
+      return result[0];
+    });
 };
 
 // 특정한 id를 가진 트윗 조회
 export const getById = async (id) => {
-  const found = tweets.find((tweet) => tweet.id === id);
-  console.log("found: ", found);
-  if (!found) {
-    return null;
-  }
-  const { username, name, url } = await userRepository.findById(found.userId);
-  return { ...found, username, name, url };
+  return db
+    .execute(`${SELECT_JOIN} WHERE tw.id=? ${ORDER_DESC}`, [id])
+    .then((result) => {
+      return result[0][0];
+    });
 };
 
 // 트윗 생성
 export const create = async (text, userId) => {
-  const tweet = {
-    id: Date.now().toString(),
-    text,
-    createdAt: new Date(),
-    userId,
-  };
-
-  tweets = [tweet, ...tweets]; // 최신순으로 정렬
-
-  return getById(tweet.id); // 사용자들의 정보를 포함한 트윗 반환
+  return db
+    .execute(`INSERT INTO tweets (text, createdAt, userId) VALUES (?, ?, ?)`, [
+      text,
+      new Date(),
+      userId,
+    ])
+    .then((result) => getById(result[0].insertId));
 };
 
 // 트윗 수정
 export const update = async (id, text) => {
-  const tweet = tweets.find((tweet) => tweet.id === id);
-
-  if (tweet) {
-    tweet.text = text;
-  }
-
-  return getById(tweet.id); // 사용자들의 정보를 포함한 트윗 반환
+  return (
+    db
+      // tweets있는걸 업데이트 할거고 어떤걸 업데이트 할것인가? SET을 하고 text를 우리가 변경하고자 하는걸로 변경. 조건은 id가 일치하는 것을 업데이트.
+      .execute("UPDATE tweets SET text=? WHERE id=?", [text, id]) // text와 id 순서로 전달 (순서 중요)
+      .then(() => getById(id))
+  );
 };
 
 // 트윗 삭제 (js에서 delete키워드를 사용하므로 함수명으로 사용못함)
 export const remove = async (id) => {
-  tweets = tweets.filter((tweet) => tweet.id !== id); // 삭제할 트윗의 id와 일치하지 않는 트윗만 남김
-  if (tweets.length === 0) {
-    return false;
-  }
-
-  return true;
+  return db.execute("DELETE FROM tweets WHERE id=?", [id]);
 };
